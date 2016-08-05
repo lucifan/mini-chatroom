@@ -26,7 +26,6 @@ var ChatRoom = React.createClass({
 		socket.emit('message', msg);
 	},
 	handleLogin: function(name) {
-		alert('login!');
 		this.setState({name: name, login: true});
 	},
 	render: function() {
@@ -56,7 +55,6 @@ var LoginBox = React.createClass({
 		this.setState({text: e.target.value});
 	},
 	handleSubmit: function(e) {
-		alert('submit!');
 		e.preventDefault();
 		this.props.onLogin(this.state.text);
 		this.setState({text: ''});
@@ -70,6 +68,7 @@ var LoginBox = React.createClass({
 						placeholder="请输入你的ID"
 						onChange={this.handleTextChange}
 						value={this.state.text}
+						maxLength="4"
 					/>
 					<input
 						type="submit"
