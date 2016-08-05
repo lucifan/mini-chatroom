@@ -1,0 +1,36 @@
+{
+  "name": "mini-chatroom",
+  "version": "1.0.0",
+  "description": "mini chatroom with Socket.io",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [
+    "chatroom"
+  ],
+  "author": "lucifan",
+  "license": "MIT",
+  "dependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.13.0",
+    "css-loader": "^0.23.1",
+    "express": "^4.14.0",
+    "gulp": "^3.9.1",
+    "gulp-csso": "^2.0.0",
+    "gulp-sass": "^2.3.2",
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.9",
+    "jade": "^1.11.0",
+    "jsx-loader": "^0.13.2",
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0",
+    "socket.io": "^1.4.8",
+    "style-loader": "^0.13.1",
+    "webpack": "^2.1.0-beta.20",
+    "webpack-stream": "^3.2.0"
+  },
+  "devDependencies": {
+    "babel-loader": "^6.2.4"
+  }
+}
