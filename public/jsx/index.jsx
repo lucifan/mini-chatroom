@@ -28,11 +28,17 @@ var ChatRoom = React.createClass({
 	handleLogin: function(name) {
 		this.setState({name: name, login: true});
 	},
+	handleStateChange: function(state) {
+		if (state == 'random') {
+			this.setState({message: []});
+			socket.emit('random');
+		}
+	},
 	render: function() {
 		if (this.state.login) {
 			return (
 				<div className="chat-room">
-					<NavList username={this.state.name} />
+					<NavList onStateChange={this.handleStateChange} username={this.state.name} />
 					<MessageBox message={this.state.message} textColor={this.state.color} />
 					<MessageForm onMessageSend={this.handleMessageSend} />
 				</div>
@@ -80,12 +86,17 @@ var LoginBox = React.createClass({
 });
 
 var NavList = React.createClass({
+	changeToMatching: function(e) {
+		e.preventDefault();
+		this.props.onStateChange('random');
+	},
 	render: function() {
 		return (
 			<nav className="nav-list">
 				<h3>{this.props.username}</h3>
 				<ul>
 					<li><a href="#">大厅</a></li>
+					<li><a href="#" onClick={this.changeToMatching}>匿名匹配</a></li>
 				</ul>
 			</nav>
 		);

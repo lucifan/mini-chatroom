@@ -74,11 +74,17 @@
 		handleLogin: function(name) {
 			this.setState({name: name, login: true});
 		},
+		handleStateChange: function(state) {
+			if (state == 'random') {
+				this.setState({message: []});
+				socket.emit('random');
+			}
+		},
 		render: function() {
 			if (this.state.login) {
 				return (
 					React.createElement("div", {className: "chat-room"}, 
-						React.createElement(NavList, {username: this.state.name}), 
+						React.createElement(NavList, {onStateChange: this.handleStateChange, username: this.state.name}), 
 						React.createElement(MessageBox, {message: this.state.message, textColor: this.state.color}), 
 						React.createElement(MessageForm, {onMessageSend: this.handleMessageSend})
 					)
@@ -126,12 +132,17 @@
 	});
 
 	var NavList = React.createClass({displayName: "NavList",
+		changeToMatching: function(e) {
+			e.preventDefault();
+			this.props.onStateChange('random');
+		},
 		render: function() {
 			return (
 				React.createElement("nav", {className: "nav-list"}, 
 					React.createElement("h3", null, this.props.username), 
 					React.createElement("ul", null, 
-						React.createElement("li", null, React.createElement("a", {href: "#"}, "大厅"))
+						React.createElement("li", null, React.createElement("a", {href: "#"}, "大厅")), 
+						React.createElement("li", null, React.createElement("a", {href: "#", onClick: this.changeToMatching}, "匿名匹配"))
 					)
 				)
 			);
@@ -28862,7 +28873,7 @@
 
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nhtml, body {\n  width: 100%;\n  margin: 0;\n  font-family: \"\\5FAE\\8F6F\\96C5\\9ED1\"; }\n\nmain {\n  height: 600px;\n  width: 800px;\n  margin: auto; }\n\nh1, h2, h3 {\n  margin: 0; }\n\n.chat-room {\n  position: relative;\n  overflow: hidden;\n  width: 100%;\n  height: 100%; }\n\n.loginBox {\n  box-sizing: border-box;\n  width: 400px;\n  height: 160px;\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  margin: auto;\n  border: 1px solid black;\n  padding: 30px;\n  text-align: center; }\n  .loginBox input[type=text] {\n    width: 340px;\n    height: 40px; }\n  .loginBox input[type=submit] {\n    width: 80px;\n    height: 40px;\n    margin-top: 20px; }\n\n.nav-list {\n  margin-right: 20px;\n  border: 1px solid black;\n  border-radius: 7px;\n  height: 300px;\n  width: 140px;\n  box-sizing: border-box;\n  float: left;\n  padding: 20px 10px 10px 10px;\n  text-align: center; }\n  .nav-list ul {\n    border: 1px solid black;\n    border-radius: 7px;\n    height: 220px;\n    list-style: none;\n    padding: 0;\n    margin: 20px 0 0 0; }\n  .nav-list li {\n    width: 100%;\n    height: 40px;\n    text-align: center;\n    line-height: 40px;\n    float: left;\n    border-bottom: 1px solid black; }\n    .nav-list li:hover {\n      background-color: rgba(160, 145, 145, 0.2); }\n  .nav-list a {\n    float: left;\n    width: 100%;\n    height: 100%;\n    text-decoration: none;\n    color: black; }\n\n.message-box, .message-form {\n  border: 1px solid black;\n  width: 640px;\n  box-sizing: border-box;\n  float: right; }\n\n.message-box {\n  height: 550px;\n  overflow-y: scroll; }\n  .message-box ul {\n    list-style: none;\n    padding: 0;\n    margin: 0; }\n  .message-box li {\n    height: 30px;\n    line-height: 30px;\n    padding-left: 20px; }\n\n.message-form {\n  height: 50px; }\n  .message-form input[type=text] {\n    box-sizing: border-box;\n    width: 90%;\n    height: 100%; }\n  .message-form input[type=submit] {\n    box-sizing: border-box;\n    width: 10%;\n    height: 100%; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\r\nhtml, body {\r\n  width: 100%;\r\n  margin: 0;\r\n  font-family: \"\\5FAE\\8F6F\\96C5\\9ED1\"; }\r\n\r\nmain {\r\n  height: 600px;\r\n  width: 800px;\r\n  margin: auto; }\r\n\r\nh1, h2, h3 {\r\n  margin: 0; }\r\n\r\n.chat-room {\r\n  position: relative;\r\n  overflow: hidden;\r\n  width: 100%;\r\n  height: 100%; }\r\n\r\n.loginBox {\r\n  box-sizing: border-box;\r\n  width: 400px;\r\n  height: 160px;\r\n  position: absolute;\r\n  top: 0;\r\n  bottom: 0;\r\n  left: 0;\r\n  right: 0;\r\n  margin: auto;\r\n  border: 1px solid black;\r\n  padding: 30px;\r\n  text-align: center; }\r\n  .loginBox input[type=text] {\r\n    width: 340px;\r\n    height: 40px; }\r\n  .loginBox input[type=submit] {\r\n    width: 80px;\r\n    height: 40px;\r\n    margin-top: 20px; }\r\n\r\n.nav-list {\r\n  margin-right: 20px;\r\n  border: 1px solid black;\r\n  border-radius: 7px;\r\n  height: 300px;\r\n  width: 140px;\r\n  box-sizing: border-box;\r\n  float: left;\r\n  padding: 20px 10px 10px 10px;\r\n  text-align: center; }\r\n  .nav-list ul {\r\n    border: 1px solid black;\r\n    border-radius: 7px;\r\n    height: 220px;\r\n    list-style: none;\r\n    padding: 0;\r\n    margin: 20px 0 0 0; }\r\n  .nav-list li {\r\n    width: 100%;\r\n    height: 40px;\r\n    text-align: center;\r\n    line-height: 40px;\r\n    float: left;\r\n    border-bottom: 1px solid black; }\r\n    .nav-list li:hover {\r\n      background-color: rgba(160, 145, 145, 0.2); }\r\n  .nav-list a {\r\n    float: left;\r\n    width: 100%;\r\n    height: 100%;\r\n    text-decoration: none;\r\n    color: black; }\r\n\r\n.message-box, .message-form {\r\n  border: 1px solid black;\r\n  width: 640px;\r\n  box-sizing: border-box;\r\n  float: right; }\r\n\r\n.message-box {\r\n  height: 550px;\r\n  overflow-y: scroll; }\r\n  .message-box ul {\r\n    list-style: none;\r\n    padding: 0;\r\n    margin: 0; }\r\n  .message-box li {\r\n    height: 30px;\r\n    line-height: 30px;\r\n    padding-left: 20px; }\r\n\r\n.message-form {\r\n  height: 50px; }\r\n  .message-form input[type=text] {\r\n    box-sizing: border-box;\r\n    width: 90%;\r\n    height: 100%; }\r\n  .message-form input[type=submit] {\r\n    box-sizing: border-box;\r\n    width: 10%;\r\n    height: 100%; }\r\n", ""]);
 
 	// exports
 
