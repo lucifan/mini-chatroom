@@ -54,30 +54,63 @@
 
 	var ChatRoom = React.createClass({displayName: "ChatRoom",
 		getInitialState: function() {
-			return {message: [], color: '', login: false, name: ''};
+			return {message: [], color: '', login: false, name: '', random: false};
 		},
 		componentDidMount: function() {
 			socket.addEventListener("chat message", function(msg) {
+				if (this.state.random) {
+					return;
+				}
 				var old_message = this.state.message;
 				var new_message = old_message.concat([msg]);
 				this.setState({message: new_message});
 			}.bind(this));
+
 			socket.addEventListener("color", function(msg) {
 				this.setState({color: msg});
 			}.bind(this));
+
+			socket.addEventListener("random found", function() {
+				var old_message = this.state.message;
+				var new_message = old_message.concat([{
+					color: "rgb(0,0,0)",
+					text: "找到小伙伴了，打声招呼吧0.0"
+				}]);
+				this.setState({message: new_message});
+			}.bind(this));
+
+			socket.addEventListener("random message", function(msg) {
+				var old_message = this.state.message;
+				delete msg['name'];
+				console.log(msg);
+				var new_message = old_message.concat([msg]);
+				this.setState({message: new_message});
+			}.bind(this));
+
+			socket.addEventListener("random over", function(msg) {
+				this.setState({message: [msg], random: false});
+			}.bind(this));
+
 		},
 		handleMessageSend: function(msg) {
 			msg.color = this.state.color;
 			msg.name = this.state.name;
-			socket.emit('message', msg);
+			if (this.state.random) {
+				socket.emit('random message', msg);
+			} else {
+				socket.emit('message', msg);
+			}
 		},
 		handleLogin: function(name) {
 			this.setState({name: name, login: true});
 		},
 		handleStateChange: function(state) {
-			if (state == 'random') {
-				this.setState({message: []});
-				socket.emit('random');
+			if (state == 'random' && !this.state.random) {
+				this.setState({message: [], random: true});
+				socket.emit('random search');
+			} else if (state == 'hall' && this.state.random) {
+				// this.setState({message: [], random: true});
+				socket.emit('random end');
 			}
 		},
 		render: function() {
@@ -136,12 +169,16 @@
 			e.preventDefault();
 			this.props.onStateChange('random');
 		},
+		changeToHall: function(e) {
+			e.preventDefault();
+			this.props.onStateChange('hall');
+		},
 		render: function() {
 			return (
 				React.createElement("nav", {className: "nav-list"}, 
 					React.createElement("h3", null, this.props.username), 
 					React.createElement("ul", null, 
-						React.createElement("li", null, React.createElement("a", {href: "#"}, "大厅")), 
+						React.createElement("li", null, React.createElement("a", {href: "#", onClick: this.changeToHall}, "大厅")), 
 						React.createElement("li", null, React.createElement("a", {href: "#", onClick: this.changeToMatching}, "匿名匹配"))
 					)
 				)
@@ -153,9 +190,15 @@
 		render: function() {
 			var key = 0;
 			var message_lists = this.props.message.map(function(message) {
-				return (
-					React.createElement("li", {key: key++, style: {color: message.color}}, message.name, ": ", message.text)
-				);
+				if (message.name) {
+					return (
+						React.createElement("li", {key: key++, style: {color: message.color}}, message.name, ": ", message.text)
+					);
+				} else {
+					return (
+						React.createElement("li", {key: key++, style: {color: message.color}}, message.text)
+					);	
+				}
 			}.bind(this));
 			return (
 				React.createElement("div", {className: "message-box"}, 
